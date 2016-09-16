@@ -12,20 +12,39 @@ type StagedManifestResponse struct {
 }
 
 type Manifest struct {
-	Jobs []*Job `yaml:"jobs"`
+	Jobs           []*Job           `yaml:"jobs"`
 }
 
 type Job struct {
-	Name       string     `yaml:"name"`
-	Properties Properties `yaml:"properties"`
+	name       string     `yaml:"name"`
+	properties Properties `yaml:"properties"`
+}
+
+type OMJob interface {
+	Name() string
+	Properties() Properties
+}
+
+func (j *Job) Name() string {
+	return j.name
+}
+
+func (j *Job) Properties() Properties {
+	return j.properties
+}
+
+func NewJob(name string) *Job {
+	return &Job{
+		name: name,
+	}
 }
 
 type Properties map[interface{}]interface{}
 
-func (m *Manifest) JobNamed(name string) (job *Job) {
+func (m *Manifest) JobNamed(name string) (job OMJob) {
 	jobName := fmt.Sprintf("%s-partition", name)
 	for _, j := range m.Jobs {
-		if matched, err := regexp.MatchString("^"+jobName, j.Name); err == nil && matched {
+		if matched, err := regexp.MatchString("^"+jobName, j.Name()); err == nil && matched {
 			job = j
 			break
 		}

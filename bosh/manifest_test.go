@@ -13,19 +13,17 @@ var _ = Describe("Manifest", func() {
 		manifest *bosh.Manifest
 	)
 
-	BeforeEach(func() {
-		job := bosh.Job{
-			Name: "existentJob-partition-random-guid",
-		}
-		manifest = &bosh.Manifest{
-			Jobs: []*bosh.Job{&job},
-		}
-	})
-
 	Describe("JobNamed", func() {
+		BeforeEach(func() {
+			job := bosh.NewJob("existentJob-partition-random-guid")
+			manifest = &bosh.Manifest{
+				Jobs: []*bosh.Job{job},
+			}
+		})
+
 		It("returns a Job matching the given name", func() {
 			expectedJob := manifest.JobNamed("existentJob")
-			Expect(expectedJob.Name).To(HavePrefix("existentJob"))
+			Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
 
 		})
 
