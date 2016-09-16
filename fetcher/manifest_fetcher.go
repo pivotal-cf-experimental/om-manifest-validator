@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/pivotal-cf/p-mysql-manifest-validation"
+	"github.com/pivotal-cf/p-mysql-manifest-validation/bosh"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,7 +25,7 @@ type Environment struct {
 	Password string
 }
 
-func (e Environment) GetStagedProductManifest(name string) (*p_mysql_manifest_validation.Manifest, error) {
+func (e Environment) GetStagedProductManifest(name string) (*bosh.Manifest, error) {
 	guid, err := e.GetProductGUID(name)
 	if err != nil {
 		return nil, err
@@ -77,7 +78,7 @@ func (e Environment) GetProductGUID(name string) (string, error) {
 	return productGUID, nil
 }
 
-func (e Environment) GetStagedProductManifestByGUID(guid string) (*p_mysql_manifest_validation.Manifest, error) {
+func (e Environment) GetStagedProductManifestByGUID(guid string) (*bosh.Manifest, error) {
 	client, err := e.oauthClient()
 	if err != nil {
 		return nil, err
@@ -103,7 +104,7 @@ func (e Environment) GetStagedProductManifestByGUID(guid string) (*p_mysql_manif
 		return nil, err
 	}
 
-	r := &p_mysql_manifest_validation.StagedManifestResponse{}
+	r := &bosh.StagedManifestResponse{}
 	yaml.Unmarshal(b, r)
 
 	return r.Manifest, nil
