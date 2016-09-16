@@ -14,22 +14,41 @@ var _ = Describe("Manifest", func() {
 	)
 
 	Describe("JobNamed", func() {
-		BeforeEach(func() {
-			job := bosh.NewJob("existentJob-partition-random-guid")
-			manifest = &bosh.Manifest{
-				Jobs: []*bosh.Job{job},
-			}
+		Context("when the manifest has a Jobs section", func() {
+			BeforeEach(func() {
+				job := bosh.NewJob("existentJob-partition-random-guid")
+				manifest = &bosh.Manifest{
+					Jobs: []*bosh.Job{job},
+				}
+			})
+
+			It("returns a Job matching the given name", func() {
+				expectedJob := manifest.JobNamed("existentJob")
+				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
+
+			})
+
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.JobNamed("nonExistentJob") }).To(Panic())
+			})
 		})
 
-		It("returns a Job matching the given name", func() {
-			expectedJob := manifest.JobNamed("existentJob")
-			Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
+		Context("when the manifest does not have a Jobs section", func() {
+			BeforeEach(func() {
+				instanceGroup := bosh.NewInstanceGroup("existentInstanceGroup-partition-random-guid")
+				manifest = &bosh.Manifest{
+					InstanceGroups: []*bosh.InstanceGroup{instanceGroup},
+				}
+			})
 
-		})
+			It("returns an InstanceGroup matching the given name", func() {
+				expectedInstanceGroup := manifest.JobNamed("existentInstanceGroup")
+				Expect(expectedInstanceGroup.Name()).To(HavePrefix("existentInstanceGroup"))
+			})
 
-		It("panics when no match is found", func() {
-			Expect(func() { manifest.JobNamed("nonExistentJob") }).To(Panic())
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.JobNamed("nonExistentInstanceGroup") }).To(Panic())
+			})
 		})
 	})
-
 })

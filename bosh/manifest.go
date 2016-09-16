@@ -13,6 +13,7 @@ type StagedManifestResponse struct {
 
 type Manifest struct {
 	Jobs           []*Job           `yaml:"jobs"`
+	InstanceGroups []*InstanceGroup `yaml:"instance_groups"`
 }
 
 type Job struct {
@@ -39,6 +40,25 @@ func NewJob(name string) *Job {
 	}
 }
 
+type InstanceGroup struct {
+	name       string     `yaml:"name"`
+	properties Properties `yaml:"properties"`
+}
+
+func (ig *InstanceGroup) Name() string {
+	return ig.name
+}
+
+func (ig *InstanceGroup) Properties() Properties {
+	return ig.properties
+}
+
+func NewInstanceGroup(name string) *InstanceGroup {
+	return &InstanceGroup{
+		name: name,
+	}
+}
+
 type Properties map[interface{}]interface{}
 
 func (m *Manifest) JobNamed(name string) (job OMJob) {
@@ -46,6 +66,12 @@ func (m *Manifest) JobNamed(name string) (job OMJob) {
 	for _, j := range m.Jobs {
 		if matched, err := regexp.MatchString("^"+jobName, j.Name()); err == nil && matched {
 			job = j
+			break
+		}
+	}
+	for _, ig := range m.InstanceGroups {
+		if matched, err := regexp.MatchString("^"+jobName, ig.Name()); err == nil && matched {
+			job = ig
 			break
 		}
 	}
