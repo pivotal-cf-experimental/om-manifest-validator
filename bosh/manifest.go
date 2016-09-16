@@ -17,8 +17,8 @@ type Manifest struct {
 }
 
 type Job struct {
-	name       string     `yaml:"name"`
-	properties Properties `yaml:"properties"`
+	N string     `yaml:"name"`
+	P Properties `yaml:"properties"`
 }
 
 type OMJob interface {
@@ -27,35 +27,35 @@ type OMJob interface {
 }
 
 func (j *Job) Name() string {
-	return j.name
+	return j.N
 }
 
 func (j *Job) Properties() Properties {
-	return j.properties
+	return j.P
 }
 
 func NewJob(name string) *Job {
 	return &Job{
-		name: name,
+		N: name,
 	}
 }
 
 type InstanceGroup struct {
-	name       string     `yaml:"name"`
-	properties Properties `yaml:"properties"`
+	N string     `yaml:"name"`
+	P Properties `yaml:"properties"`
 }
 
 func (ig *InstanceGroup) Name() string {
-	return ig.name
+	return ig.N
 }
 
 func (ig *InstanceGroup) Properties() Properties {
-	return ig.properties
+	return ig.P
 }
 
 func NewInstanceGroup(name string) *InstanceGroup {
 	return &InstanceGroup{
-		name: name,
+		N: name,
 	}
 }
 
