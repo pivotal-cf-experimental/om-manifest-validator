@@ -35,7 +35,7 @@ var _ = Describe("Manifest", func() {
 
 		Context("when the manifest does not have a Jobs section", func() {
 			BeforeEach(func() {
-				instanceGroup := bosh.NewInstanceGroup("existentInstanceGroup-partition-random-guid")
+				instanceGroup := bosh.NewInstanceGroup("existentInstanceGroup")
 				manifest = &bosh.Manifest{
 					InstanceGroups: []*bosh.InstanceGroup{instanceGroup},
 				}
@@ -43,7 +43,7 @@ var _ = Describe("Manifest", func() {
 
 			It("returns an InstanceGroup matching the given name", func() {
 				expectedInstanceGroup := manifest.JobNamed("existentInstanceGroup")
-				Expect(expectedInstanceGroup.Name()).To(HavePrefix("existentInstanceGroup"))
+				Expect(expectedInstanceGroup.Name()).To(Equal("existentInstanceGroup"))
 			})
 
 			It("panics when no match is found", func() {

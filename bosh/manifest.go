@@ -70,7 +70,7 @@ func (m *Manifest) JobNamed(name string) (job OMJob) {
 		}
 	}
 	for _, ig := range m.InstanceGroups {
-		if matched, err := regexp.MatchString("^"+jobName, ig.Name()); err == nil && matched {
+		if ig.Name() == name {
 			job = ig
 			break
 		}
