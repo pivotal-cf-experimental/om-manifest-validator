@@ -158,4 +158,112 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+	Describe("FindString", func() {
+		Context("when the property is not present", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{},
+				}
+				v, err := p.FindString("a.nonExistent.property")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+		Context("when the property is an integer", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"an": bosh.Properties{
+						"integerProperty": 31,
+					},
+				}
+				v, err := p.FindString("an.integerProperty")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+		Context("when the property is a string", func() {
+			It("returns the value", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{
+						"stringProperty": "thirty-one",
+					},
+				}
+				v, err := p.FindString("a.stringProperty")
+				Expect(v).To(Equal("thirty-one"))
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+	})
+	Describe("FindInt", func() {
+		Context("when the property is not present", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{},
+				}
+				v, err := p.FindInt("a.nonExistent.property")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+		Context("when the property is an integer", func() {
+			It("returns the value", func() {
+				p := &bosh.Properties{
+					"an": bosh.Properties{
+						"integerProperty": 31,
+					},
+				}
+				v, err := p.FindInt("an.integerProperty")
+				Expect(v).To(Equal(31))
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+		Context("when the property is a string", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{
+						"stringProperty": "thirty-one",
+					},
+				}
+				v, err := p.FindInt("a.stringProperty")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+	})
+	Describe("FindBool", func() {
+		Context("when the property is not present", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{},
+				}
+				v, err := p.FindBool("a.nonExistent.property")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+		Context("when the property is a boolean", func() {
+			It("returns the value", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{
+						"booleanProperty": false,
+					},
+				}
+				v, err := p.FindBool("a.booleanProperty")
+				Expect(v).To(BeFalse())
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+		Context("when the property is a string", func() {
+			It("returns an error", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{
+						"stringProperty": "true",
+					},
+				}
+				v, err := p.FindBool("a.stringProperty")
+				Expect(v).To(BeZero())
+				Expect(err).To(HaveOccurred())
+			})
+		})
+	})
 })
