@@ -1,7 +1,7 @@
 package bosh_test
 
 import (
-	"github.com/pivotal-cf/p-mysql-manifest-validation/bosh"
+	"github.com/pivotal-cf-experimental/om-manifest-validator/bosh"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

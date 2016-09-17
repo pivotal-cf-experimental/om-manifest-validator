@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 
-	"github.com/pivotal-cf/p-mysql-manifest-validation/fetcher"
+	"github.com/pivotal-cf-experimental/om-manifest-validator/fetcher"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

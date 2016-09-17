@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/pivotal-cf/p-mysql-manifest-validation/bosh"
+	"github.com/pivotal-cf-experimental/om-manifest-validator/bosh"
 
 	"gopkg.in/yaml.v2"
 )
