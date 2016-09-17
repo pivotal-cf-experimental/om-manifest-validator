@@ -51,4 +51,111 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+	Describe("Find", func() {
+		Context("when the lens is un-nested", func() {
+			Context("and the property is not present", func() {
+				It("returns an error", func() {
+					p := &bosh.Properties{}
+					v, err := p.Find("nonExistentProperty")
+					Expect(v).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
+			})
+			Context("and the property is present", func() {
+				It("returns the property value", func() {
+					p := &bosh.Properties{
+						"anotherProperty":  "foo",
+						"existentProperty": "some-value",
+					}
+					v, err := p.Find("existentProperty")
+					Expect(v).To(Equal("some-value"))
+					Expect(err).ToNot(HaveOccurred())
+				})
+			})
+		})
+		Context("when the lens is nested", func() {
+			Context("and the property is not present", func() {
+				It("returns an error", func() {
+					p := &bosh.Properties{
+						"anotherProperty": "foo",
+					}
+					v, err := p.Find("a.nonExistentProperty")
+					Expect(v).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
+			})
+			Context("and the property is present", func() {
+				It("returns the property value", func() {
+					p := &bosh.Properties{
+						"anotherProperty": "foo",
+						"an": bosh.Properties{
+							"existentProperty": "some-value",
+						},
+					}
+					v, err := p.Find("an.existentProperty")
+					Expect(v).To(Equal("some-value"))
+					Expect(err).ToNot(HaveOccurred())
+				})
+			})
+		})
+		Context("when the lens is deeply nested", func() {
+			Context("and the property is not present", func() {
+				It("returns an error", func() {
+					p := &bosh.Properties{
+						"anotherProperty": "foo",
+						"an": bosh.Properties{
+							"alternative": bosh.Properties{
+								"property": "another-value",
+							},
+						},
+					}
+					v, err := p.Find("an.alternative.nonExistent.property")
+					Expect(v).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
+			})
+			Context("and the property is present", func() {
+				It("returns the property value", func() {
+					p := &bosh.Properties{
+						"anotherProperty": "foo",
+						"a": bosh.Properties{
+							"deeply": bosh.Properties{
+								"nested": bosh.Properties{
+									"existentProperty": "some-value",
+								},
+							},
+						},
+					}
+					v, err := p.Find("a.deeply.nested.existentProperty")
+					Expect(v).To(Equal("some-value"))
+					Expect(err).ToNot(HaveOccurred())
+				})
+			})
+			Context("and an intermediate node is not of the expected type", func() {
+				It("panics", func() {
+					p := &bosh.Properties{
+						"anotherProperty": "foo",
+						"an": map[string]string{
+							"unusual": "property",
+						},
+					}
+					Expect(func() { p.Find("an.unusual.property") }).To(Panic())
+				})
+			})
+		})
+		Context("when the value is an array", func() {
+			It("returns the property value", func() {
+				p := &bosh.Properties{
+					"a": bosh.Properties{
+						"nested": bosh.Properties{
+							"array": []string{"foo", "bar", "baz"},
+						},
+					},
+				}
+				v, err := p.Find("a.nested.array")
+				Expect(v).To(Equal([]string{"foo", "bar", "baz"}))
+				Expect(err).ToNot(HaveOccurred())
+			})
+		})
+	})
 })

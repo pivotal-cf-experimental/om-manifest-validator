@@ -95,13 +95,15 @@ func (p Properties) Find(lens string) (val interface{}, err error) {
 
 	m := matchers[0]
 
-	next := p[m]
-	n, ok := next.(Properties)
-	if !ok {
-		panic("fail")
+	if next, present := p[m]; present {
+		n, ok := next.(Properties)
+		if !ok {
+			panic("type conversion failed")
+		}
+		return n.Find(strings.Join(matchers[1:], "."))
+	} else {
+		return nil, errors.New("value not found")
 	}
-
-	return n.Find(strings.Join(matchers[1:], "."))
 }
 
 func (p Properties) FindString(lens string) (val string, err error) {
