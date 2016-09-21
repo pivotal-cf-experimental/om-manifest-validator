@@ -35,6 +35,14 @@
 			"revision": "4784bb855e56a530f1ce5d788959359ed6cb4a16",
 			"branch": "master",
 			"notests": true
+		},
+		{
+			"importpath": "gopkg.in/yaml.v2",
+			"repository": "https://gopkg.in/yaml.v2",
+			"vcs": "git",
+			"revision": "31c299268d302dd0aa9a0dcf765a3d58971ac83f",
+			"branch": "v2",
+			"notests": true
 		}
 	]
 }
