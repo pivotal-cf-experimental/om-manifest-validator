@@ -65,21 +65,21 @@ func (m *Manifest) JobNamed(name string) (job OMJob) {
 	jobName := fmt.Sprintf("%s-partition", name)
 	for _, j := range m.Jobs {
 		if matched, err := regexp.MatchString("^"+jobName, j.Name()); err == nil && matched {
-			job = j
-			break
+			return j
+		}
+	}
+	for _, j := range m.Jobs {
+		if matched, err := regexp.MatchString("^"+name, j.Name()); err == nil && matched {
+			return j
 		}
 	}
 	for _, ig := range m.InstanceGroups {
 		if ig.Name() == name {
-			job = ig
-			break
+			return ig
 		}
 	}
 
-	if job == nil {
-		panic(fmt.Sprintf("Unable to find job named: '%s'", jobName))
-	}
-	return
+	panic(fmt.Sprintf("Unable to find job named: '%s'", jobName))
 }
 
 func (p Properties) Find(lens string) (val interface{}, err error) {
