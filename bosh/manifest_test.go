@@ -13,6 +13,45 @@ var _ = Describe("Manifest", func() {
 		manifest *bosh.Manifest
 	)
 
+	Describe("InstanceGroups FindJob", func() {
+		Context("when the InstanceGroup has a Jobs section", func() {
+			var instanceGroup *bosh.InstanceGroup
+			BeforeEach(func() {
+				job := bosh.NewJob("existentJob-partition-random-guid")
+				instanceGroup = bosh.NewInstanceGroup("existentInstanceGroup", []*bosh.Job{job})
+			})
+
+			It("returns a Job matching the given name", func() {
+				expectedJob := instanceGroup.FindJob("existentJob-partition-random-guid")
+				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
+			})
+
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.JobNamed("nonExistentJob") }).To(Panic())
+			})
+		})
+	})
+
+	Describe("InstanceGroupNamed", func() {
+		Context("when the manifest has a InstanceGroups section", func() {
+			BeforeEach(func() {
+				instanceGroup := bosh.NewInstanceGroup("existentIG-random-guid")
+				manifest = &bosh.Manifest{
+					InstanceGroups: []*bosh.InstanceGroup{instanceGroup},
+				}
+			})
+
+			It("returns an InstanceGroup matching the given name", func() {
+				expectedJob := manifest.InstanceGroupNamed("existentIG-random-guid")
+				Expect(expectedJob.Name()).To(HavePrefix("existentIG-random-guid"))
+			})
+
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.InstanceGroupNamed("nonExistentJob") }).To(Panic())
+			})
+		})
+	})
+
 	Describe("JobNamed", func() {
 		Context("when the manifest has a Jobs section", func() {
 			BeforeEach(func() {
@@ -51,6 +90,7 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+
 	Describe("Find", func() {
 		Context("when the lens is un-nested", func() {
 			Context("and the property is not present", func() {
@@ -158,6 +198,7 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+
 	Describe("FindString", func() {
 		Context("when the property is not present", func() {
 			It("returns an error", func() {
@@ -194,6 +235,7 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+
 	Describe("FindInt", func() {
 		Context("when the property is not present", func() {
 			It("returns an error", func() {
@@ -230,6 +272,7 @@ var _ = Describe("Manifest", func() {
 			})
 		})
 	})
+
 	Describe("FindBool", func() {
 		Context("when the property is not present", func() {
 			It("returns an error", func() {
