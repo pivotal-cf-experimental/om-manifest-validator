@@ -26,9 +26,8 @@ var _ = Describe("Manifest", func() {
 				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
 			})
 
-			It("returns nil when no match is found", func() {
-				expectedJob := instanceGroup.FindJob("nonExistentJob")
-				Expect(expectedJob).To(BeNil())
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.JobNamed("nonExistentJob") }).To(Panic())
 			})
 		})
 	})
@@ -47,9 +46,8 @@ var _ = Describe("Manifest", func() {
 				Expect(expectedJob.Name()).To(HavePrefix("existentIG-random-guid"))
 			})
 
-			It("returns nil when no match is found", func() {
-				expectedJob := manifest.InstanceGroupNamed("nonExistentInstanceGroup")
-				Expect(expectedJob).To(BeNil())
+			It("panics when no match is found", func() {
+				Expect(func() { manifest.InstanceGroupNamed("nonExistentJob") }).To(Panic())
 			})
 		})
 	})
