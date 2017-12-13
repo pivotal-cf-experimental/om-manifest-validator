@@ -88,7 +88,17 @@ func (m *Manifest) InstanceGroupNamed(instanceGroupName string) *InstanceGroup {
 			return ig
 		}
 	}
-	panic(fmt.Sprintf("Unable to find instanceGroup named: '%s'", instanceGroupName))
+	return nil
+}
+
+func (m *Manifest) MustFindInstanceGroupNamed(instanceGroupName string) *InstanceGroup {
+	ig := m.InstanceGroupNamed(instanceGroupName)
+
+	if ig == nil {
+		panic(fmt.Sprintf("Unable to find instanceGroup named: '%s'", instanceGroupName))
+	}
+
+	return ig
 }
 
 func (m *Manifest) JobNamed(name string) (job OMJob) {
