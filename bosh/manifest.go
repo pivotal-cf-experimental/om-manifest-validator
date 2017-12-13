@@ -73,24 +73,6 @@ func NewInstanceGroup(name string, jobs ...[]*Job) *InstanceGroup {
 	}
 }
 
-func (ig *InstanceGroup) FindJob(name string) *Job {
-	for _, j := range ig.J {
-		if matched, err := regexp.MatchString("^"+name+"$", j.Name()); err == nil && matched {
-			return j
-		}
-	}
-	panic(fmt.Sprintf("Unable to find job named: '%s'", name))
-}
-
-func (m *Manifest) InstanceGroupNamed(instanceGroupName string) *InstanceGroup {
-	for _, ig := range m.InstanceGroups {
-		if ig.Name() == instanceGroupName {
-			return ig
-		}
-	}
-	panic(fmt.Sprintf("Unable to find instanceGroup named: '%s'", instanceGroupName))
-}
-
 func (m *Manifest) JobNamed(name string) (job OMJob) {
 	jobName := fmt.Sprintf("%s-partition", name)
 
