@@ -44,12 +44,17 @@ type Properties map[interface{}]interface{}
 
 type InstanceGroup struct {
 	N string     `yaml:"name"`
+	I int		 `yaml:"instances"`
 	J []*Job     `yaml:"jobs"`
 	P Properties `yaml:"properties"`
 }
 
 func (ig *InstanceGroup) Name() string {
 	return ig.N
+}
+
+func (ig *InstanceGroup) Instances() int {
+	return ig.I
 }
 
 func (ig *InstanceGroup) Properties() Properties {
@@ -80,6 +85,14 @@ func (ig *InstanceGroup) FindJob(name string) *Job {
 		}
 	}
 	panic(fmt.Sprintf("Unable to find job named: '%s'", name))
+}
+
+func (m *Manifest) InstanceGroupNamedIfNonEmpty(instanceGroupName string) *InstanceGroup {
+	ig := m.InstanceGroupNamed(instanceGroupName)
+	if ig != nil && ig.Instances() > 0{
+		return ig
+	}
+	return nil
 }
 
 func (m *Manifest) InstanceGroupNamed(instanceGroupName string) *InstanceGroup {

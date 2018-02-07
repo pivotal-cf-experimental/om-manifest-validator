@@ -52,6 +52,33 @@ var _ = Describe("Manifest", func() {
 		})
 	})
 
+	Describe("InstanceGroupNamedIfNonEmpty", func() {
+		Context("when the manifest has a InstanceGroups section", func() {
+			BeforeEach(func() {
+				instanceGroup := bosh.NewInstanceGroup("existentIG-random-guid")
+				manifest = &bosh.Manifest{
+					InstanceGroups: []*bosh.InstanceGroup{instanceGroup},
+				}
+			})
+
+			It("returns an InstanceGroup matching the given name with instances > 0", func() {
+				manifest.InstanceGroups[0].I = 1
+				expectedJob := manifest.InstanceGroupNamedIfNonEmpty("existentIG-random-guid")
+				Expect(expectedJob.Name()).To(HavePrefix("existentIG-random-guid"))
+			})
+
+			It("returns nil when the InstanceGroup name matches but the instances = 0", func() {
+				manifest.InstanceGroups[0].I = 0
+				Expect(manifest.InstanceGroupNamedIfNonEmpty("existentIG-random-guid")).To(BeNil())
+			})
+
+			It("return nil when no match is found", func() {
+				Expect(manifest.InstanceGroupNamedIfNonEmpty("nonExistentJob")).To(BeNil())
+			})
+		})
+	})
+
+
 
 	Describe("MustFindInstanceGroupNamed", func() {
 		Context("when the manifest has a InstanceGroups section", func() {
