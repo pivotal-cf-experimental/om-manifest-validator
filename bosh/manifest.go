@@ -84,7 +84,17 @@ func (ig *InstanceGroup) FindJob(name string) *Job {
 			return j
 		}
 	}
-	panic(fmt.Sprintf("Unable to find job named: '%s'", name))
+	return nil
+}
+
+func (ig *InstanceGroup) MustFindJob(name string) *Job {
+	job := ig.FindJob(name)
+
+	if job == nil {
+		panic(fmt.Sprintf("Unable to find job named: '%s'", name))
+	}
+
+	return job
 }
 
 func (m *Manifest) InstanceGroupNamedIfNonEmpty(instanceGroupName string) *InstanceGroup {

@@ -26,8 +26,33 @@ var _ = Describe("Manifest", func() {
 				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
 			})
 
+			It("returns nil if no job was found", func() {
+				expectedJob := instanceGroup.FindJob("nonExistentJob")
+				Expect(expectedJob).To(BeNil())
+
+			})
+
 			It("panics when no match is found", func() {
 				Expect(func() { manifest.JobNamed("nonExistentJob") }).To(Panic())
+			})
+		})
+	})
+
+	Describe("InstanceGroups MustFindJob", func() {
+		Context("when the InstanceGroup has a Jobs section", func() {
+			var instanceGroup *bosh.InstanceGroup
+			BeforeEach(func() {
+				job := bosh.NewJob("existentJob-partition-random-guid")
+				instanceGroup = bosh.NewInstanceGroup("existentInstanceGroup", []*bosh.Job{job})
+			})
+
+			It("returns a Job matching the given name", func() {
+				expectedJob := instanceGroup.MustFindJob("existentJob-partition-random-guid")
+				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
+			})
+
+			It("panics if no job was found", func() {
+				Expect(func() { instanceGroup.MustFindJob("nonExistentJob") }).To(Panic())
 			})
 		})
 	})
