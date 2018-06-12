@@ -14,6 +14,12 @@ type StagedManifestResponse struct {
 type Manifest struct {
 	Jobs           []*Job           `yaml:"jobs"`
 	InstanceGroups []*InstanceGroup `yaml:"instance_groups"`
+	Releases       []Release        `yaml:"releases"`
+}
+
+type Release struct {
+	Name    string `yaml:"name"`
+	Version string `yaml:"version"`
 }
 
 type Job struct {
