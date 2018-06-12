@@ -17,8 +17,9 @@ type Manifest struct {
 }
 
 type Job struct {
-	N string     `yaml:"name"`
-	P Properties `yaml:"properties"`
+	N string                 `yaml:"name"`
+	P Properties             `yaml:"properties"`
+	C map[string]interface{} `yaml:"consumes"`
 }
 
 type OMJob interface {
@@ -34,6 +35,10 @@ func (j *Job) Properties() Properties {
 	return j.P
 }
 
+func (j *Job) Consumes() map[string]interface{} {
+	return j.C
+}
+
 func NewJob(name string) *Job {
 	return &Job{
 		N: name,
@@ -44,7 +49,7 @@ type Properties map[interface{}]interface{}
 
 type InstanceGroup struct {
 	N string     `yaml:"name"`
-	I int		 `yaml:"instances"`
+	I int        `yaml:"instances"`
 	J []*Job     `yaml:"jobs"`
 	P Properties `yaml:"properties"`
 }
@@ -99,7 +104,7 @@ func (ig *InstanceGroup) MustFindJob(name string) *Job {
 
 func (m *Manifest) InstanceGroupNamedIfNonEmpty(instanceGroupName string) *InstanceGroup {
 	ig := m.InstanceGroupNamed(instanceGroupName)
-	if ig != nil && ig.Instances() > 0{
+	if ig != nil && ig.Instances() > 0 {
 		return ig
 	}
 	return nil
