@@ -15,6 +15,13 @@ type Manifest struct {
 	Jobs           []*Job           `yaml:"jobs"`
 	InstanceGroups []*InstanceGroup `yaml:"instance_groups"`
 	Releases       []Release        `yaml:"releases"`
+	Variables      []Variable       `yaml:"variables"`
+}
+
+type Variable struct {
+	Name    string                 `yaml:"name"`
+	Type    string                 `yaml:"type"`
+	Options map[string]interface{} `yaml:"options"`
 }
 
 type Release struct {
