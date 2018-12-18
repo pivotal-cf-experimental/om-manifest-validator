@@ -63,7 +63,10 @@ func (e Environment) GetProductGUID(name string) (string, error) {
 	}
 
 	ps := &Products{}
-	yaml.Unmarshal(b, ps)
+	err = yaml.Unmarshal(b, ps)
+	if err != nil {
+		return "", err
+	}
 
 	for _, p := range *ps {
 		if p.Type == name {
@@ -105,7 +108,10 @@ func (e Environment) GetStagedProductManifestByGUID(guid string) (*bosh.Manifest
 	}
 
 	r := &bosh.StagedManifestResponse{}
-	yaml.Unmarshal(b, r)
+	err = yaml.Unmarshal(b, r)
+	if err != nil {
+		return nil, err
+	}
 
 	return r.Manifest, nil
 }
