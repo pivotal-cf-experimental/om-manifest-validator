@@ -82,6 +82,40 @@ func (e Environment) GetProductGUID(name string) (string, error) {
 }
 
 func (e Environment) GetStagedProductManifestByGUID(guid string) (*bosh.Manifest, error) {
+	b, err := e.makeRequest(guid)
+	if err != nil {
+		return nil, err
+	}
+
+	r := &bosh.StagedManifestResponse{}
+	yaml.Unmarshal(b, r)
+
+	return r.Manifest, nil
+}
+
+func (e Environment) GetRawStagedProductManifest(name string) ([]byte, error) {
+	guid, err := e.GetProductGUID(name)
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := e.makeRequest(guid)
+	if err != nil {
+		return nil, err
+	}
+
+	var manifestWrapper map[string]interface{}
+	yaml.Unmarshal(b, &manifestWrapper)
+
+	manifest, err := yaml.Marshal(manifestWrapper["manifest"].(map[interface {}]interface {}))
+	if err != nil {
+		panic(err)
+	}
+
+	return manifest, nil
+}
+
+func (e Environment) makeRequest(guid string) ([]byte, error) {
 	client, err := e.oauthClient()
 	if err != nil {
 		return nil, err
@@ -107,13 +141,7 @@ func (e Environment) GetStagedProductManifestByGUID(guid string) (*bosh.Manifest
 		return nil, err
 	}
 
-	r := &bosh.StagedManifestResponse{}
-	err = yaml.Unmarshal(b, r)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Manifest, nil
+	return b, nil
 }
 
 func (e Environment) oauthClient() (*http.Client, error) {
