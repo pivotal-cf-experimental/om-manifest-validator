@@ -96,6 +96,15 @@ func NewInstanceGroup(name string, jobs ...[]*Job) *InstanceGroup {
 	}
 }
 
+func (ig *InstanceGroup) FindJobWithIndex(name string) (*Job, int) {
+	for index, j := range ig.J {
+		if matched, err := regexp.MatchString("^"+name+"$", j.Name()); err == nil && matched {
+			return j, index
+		}
+	}
+	return nil, 0
+}
+
 func (ig *InstanceGroup) FindJob(name string) *Job {
 	for _, j := range ig.J {
 		if matched, err := regexp.MatchString("^"+name+"$", j.Name()); err == nil && matched {

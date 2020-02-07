@@ -13,6 +13,34 @@ var _ = Describe("Manifest", func() {
 		manifest *bosh.Manifest
 	)
 
+	Describe("InstanceGroups FindJobWithIndex", func() {
+		Context("when the InstanceGroup has a Jobs section", func() {
+			var instanceGroup *bosh.InstanceGroup
+			BeforeEach(func() {
+				job := bosh.NewJob("existentJob-partition-random-guid")
+				job2 := bosh.NewJob("secondJob-partition-random-guid")
+				instanceGroup = bosh.NewInstanceGroup("existentInstanceGroup", []*bosh.Job{job, job2})
+			})
+
+			It("returns a Job and its index", func() {
+				expectedJob, index := instanceGroup.FindJobWithIndex("existentJob-partition-random-guid")
+				Expect(expectedJob.Name()).To(HavePrefix("existentJob"))
+				Expect(index).To(Equal(0))
+
+				expectedJob2, index2 := instanceGroup.FindJobWithIndex("secondJob-partition-random-guid")
+				Expect(expectedJob2.Name()).To(HavePrefix("secondJob"))
+				Expect(index2).To(Equal(1))
+			})
+
+			It("returns 0 if no job was found", func() {
+				expectedJob, index := instanceGroup.FindJobWithIndex("secondJob")
+				Expect(expectedJob).To(BeNil())
+				Expect(index).To(Equal(0))
+			})
+		})
+	})
+
+
 	Describe("InstanceGroups FindJob", func() {
 		Context("when the InstanceGroup has a Jobs section", func() {
 			var instanceGroup *bosh.InstanceGroup
